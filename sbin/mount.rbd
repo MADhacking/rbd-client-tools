@@ -38,7 +38,6 @@ function error_exit
 {
 	echo $1
 	echo
-	helpscreen
 	exit $2
 }
 
@@ -73,6 +72,11 @@ if [[ ! -e /dev/rbd/${rbd_info[0]}/${rbd_info[1]} ]]; then
 
 	# We need to wait for UDEV to settle.
 	wait_for_device /dev/rbd/${rbd_info[0]}/${rbd_info[1]}
+fi
+
+# Try to run fsck on the device as the init script won't!
+if ! fsck -M -C -T /dev/rbd/${rbd_info[0]}/${rbd_info[1]} -- -a; then
+	echo "fsck of /dev/rbd/${rbd_info[0]}/${rbd_info[1]} returned with $?!"
 fi
 
 # Try to mount the device, if it fails then unmap it and bail.

@@ -75,9 +75,8 @@ if [[ ! -e /dev/rbd/${rbd_info[0]}/${rbd_info[1]} ]]; then
 fi
 
 # Try to run fsck on the device as the init script won't!
-if ! fsck -M -C -T /dev/rbd/${rbd_info[0]}/${rbd_info[1]} -- -a; then
+fsck -M -C -T /dev/rbd/${rbd_info[0]}/${rbd_info[1]} -- -a || \
 	echo "fsck of /dev/rbd/${rbd_info[0]}/${rbd_info[1]} returned with $?!"
-fi
 
 # Try to mount the device, if it fails then unmap it and bail.
 if ! mount /dev/rbd/${rbd_info[0]}/${rbd_info[1]} $2 -o $4; then
